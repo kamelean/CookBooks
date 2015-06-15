@@ -1,0 +1,6 @@
+name              "php_kam"
+maintainer        "Jochen Emig"
+maintainer_email  "jsemig@gmail.com"
+license           "MIT"
+description       "Installs or Updates PHP Project dependencies using Composer"
+version           "1.0.0"
