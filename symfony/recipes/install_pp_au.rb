@@ -29,8 +29,6 @@ node[:deploy].each do |application, deploy|
       action :create
     end
 
-    #{deploy[:deploy_to]}
-
     #Get web app file
     obj_app = s3.buckets['ops-works-config'].objects["pp_apps/" + current[1]['web_app']]
     file_content_app = obj_app.read
@@ -39,8 +37,23 @@ node[:deploy].each do |application, deploy|
       action :create
     end
 
-    #log "I have #{current[1]['user']}" do
-    #  level :info
-    #end
+    #Copy and update parameter file
+    file_names = ['#{deploy[:deploy_to]}/current/' + current[1]['app_folder'] + '/config/parameters_pp.dist.yml']
+
+    file_names.each do |file_name|
+      text = File.read(file_name)
+      new_contents = text.gsub("YOUR_USER", current[1]['user'])
+      new_contents = new_contents.gsub("YOUR_PASSWORD", current[1]['pass'])
+
+      # To merely print the contents of the file, use:
+      #puts new_contents
+
+      # To write changes to the file, use:
+      File.open('#{deploy[:deploy_to]}/current/' + current[1]['app_folder'] + '/config/parameters_pp.yml', "w") {|file| file.puts new_contents }
+
+      #log "I have #{current[1]['user']}" do
+      #  level :info
+      #end
+    end
   end
 end
