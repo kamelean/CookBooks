@@ -1,6 +1,6 @@
-name              "php_kam"
+name              "symfony"
 maintainer        "Jochen Emig"
 maintainer_email  "jsemig@gmail.com"
 license           "MIT"
-description       "Add-ons for PHP used by kamelean"
+description       "Chef extension for Symfony commands"
 version           "1.0.0"
