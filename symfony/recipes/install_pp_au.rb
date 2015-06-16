@@ -13,10 +13,11 @@ file_content = obj.read
 
 sites = JSON.parse(file_content)
 sites['site'].each do |current|
-  obj_vhost = s3.buckets['ops-works-config'].objects["vhosts/" + current[1]['vhost']]
+  obj_vhost = s3.buckets['ops-works-config'].objects["vhosts/mintyshop_au_pp.conf"]
   file_content = obj_vhost.read
 
-  file '/etc/apache2/sites-enabled/' + current[1]['vhost'] do
+  #Get vhost and write to file
+  file '/etc/apache2/sites-enabled/mintyshop_au_pp.conf' do
     content file_content
     action :create
   end
