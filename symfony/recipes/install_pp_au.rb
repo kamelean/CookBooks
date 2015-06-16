@@ -14,7 +14,7 @@ Chef::Log.info(file_content)
 sites = JSON.parse(file_content)
 
 sites['site'].each do |current|
-  log "I have #{current[0]}" do
+  log "I have #{current['db_user']}" do
   level :info
   end
 end
