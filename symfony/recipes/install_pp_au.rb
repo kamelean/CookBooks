@@ -1,12 +1,20 @@
-node[:deploy].each do |application, deploy|
-  script "install_composer" do
-    interpreter "bash"
-    user "root"
-    cwd "#{deploy[:deploy_to]}/current"
-    code <<-EOH
+require 'aws-sdk'
 
-    php composer.phar install --prefer-dist --no-scripts --optimize-autoloader --no-scripts
-    EOH
-    only_if { ::File.exists?("#{deploy[:deploy_to]}/current/composer.json") }
+s3 = AWS::S3.new
+
+# Set bucket and object name
+obj = s3.buckets['ops-works-config'].objects['au-pp.json']
+
+# Read content to variable
+file_content = obj.read
+
+# Log output (optional)
+Chef::Log.info(file_content)
+
+sites = JSON.parse(file_content)
+
+sites['site'].each do |site|
+  log "I have #{site}" do
+    level :info
   end
 end
