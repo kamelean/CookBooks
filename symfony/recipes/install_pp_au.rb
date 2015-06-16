@@ -38,7 +38,7 @@ node[:deploy].each do |application, deploy|
     end
 
     #Copy and update parameter file
-    file_names = ['#{deploy[:deploy_to]}/current/' + current[1]['app_folder'] + '/config/parameters_pp.dist.yml']
+    file_names = ["#{deploy[:deploy_to]}/current/" + current[1]['app_folder'] + '/config/parameters_pp.dist.yml']
 
     file_names.each do |file_name|
       text = File.read(file_name)
@@ -49,7 +49,7 @@ node[:deploy].each do |application, deploy|
       #puts new_contents
 
       # To write changes to the file, use:
-      File.open('#{deploy[:deploy_to]}/current/' + current[1]['app_folder'] + '/config/parameters_pp.yml', "w") {|file| file.puts new_contents }
+      File.open("#{deploy[:deploy_to]}/current/" + current[1]['app_folder'] + '/config/parameters_pp.yml', "w") {|file| file.puts new_contents }
 
       #log "I have #{current[1]['user']}" do
       #  level :info
