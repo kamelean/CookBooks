@@ -2,6 +2,10 @@ require 'aws-sdk'
 
 s3 = AWS::S3.new
 
+#Globals
+vhost_bucket = "vhosts/"
+vhost_path = "/etc/apache2/sites-enabled/"
+
 # Set bucket and object name
 obj = s3.buckets['ops-works-config'].objects['au-pp.json']
 
@@ -13,11 +17,13 @@ file_content = obj.read
 
 sites = JSON.parse(file_content)
 sites['site'].each do |current|
-  obj_vhost = s3.buckets['ops-works-config'].objects["vhosts/mintyshop_au_pp.conf"]
+  tmp_vhost_bucket = vhost_bucket + current[1]['vhost']
+  obj_vhost = s3.buckets['ops-works-config'].objects[tmp_vhost_bucket]
   file_content = obj_vhost.read
 
   #Get vhost and write to file
-  file '/etc/apache2/sites-enabled/mintyshop_au_pp.conf' do
+  tmp_vhost_path = vhost_path + current[1]['vhost']
+  file tmp_vhost_path do
     content file_content
     action :create
   end
