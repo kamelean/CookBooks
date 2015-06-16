@@ -15,6 +15,6 @@ sites = JSON.parse(file_content)
 
 sites['site'].each do |site|
   log "I have #{site}" do
-    level :info
+  level :info
   end
 end
