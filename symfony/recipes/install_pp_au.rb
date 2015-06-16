@@ -31,7 +31,7 @@ sites['site'].each do |current|
   #{deploy[:deploy_to]}
 
   #Get web app file
-  obj_app = s3.buckets['ops-works-config']."pp_apps/" + objects[current[1]['web_app']]
+  obj_app = s3.buckets['ops-works-config'].objects["pp_apps/" + current[1]['web_app']]
   file_content_app = obj_app.read
   file "#{deploy[:deploy_to]}/current/web/" + current[1]['web_app'] do
     content file_content_app
