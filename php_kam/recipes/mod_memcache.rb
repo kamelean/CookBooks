@@ -9,8 +9,8 @@ case node['platform_family']
       action :install
       # directives(:shm_size => "128M", :enable_cli => 0)
     end
-  when 'debian'
-    package 'php5-memcache' do
+  when 'ubuntu'
+    package 'php5-memcached' do
       action :install
     end
 end

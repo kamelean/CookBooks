@@ -7,8 +7,8 @@ case node['platform_family']
       channel pearhub_chan.channel_name
       action :install
     end
-  when 'debian'
-    package 'php-fpdf' do
+  when 'ubuntu'
+    package 'php5-fpm' do
       action :install
     end
 end
