@@ -63,6 +63,10 @@ node[:deploy].each do |application, deploy|
       code <<-EOH
 
         php #{current[1]['app_folder']}/console assetic:dump --env=#{current[1]['env']}
+        php #{current[1]['app_folder']}/console assets:install --env=#{current[1]['env']}
+        php #{current[1]['app_folder']}/console cache:clear --env=#{current[1]['env']} --no-debug --no-warmup
+        chmod -R 777 #{current[1]['app_folder']}/cache
+        chmod -R 777 #{current[1]['app_folder']}/logs
 
       EOH
       only_if { ::File.exists?("#{deploy[:deploy_to]}/current/composer.json") }
