@@ -55,5 +55,17 @@ node[:deploy].each do |application, deploy|
       #  level :info
       #end
     end
+
+    script "install_remains" do
+      interpreter "bash"
+      user "root"
+      cwd "#{deploy[:deploy_to]}/current"
+      code <<-EOH
+
+        php #{current[1]['app_folder']}/console assetic:dump --env=#{current[1]['env']}
+
+      EOH
+      only_if { ::File.exists?("#{deploy[:deploy_to]}/current/composer.json") }
+    end
   end
 end
