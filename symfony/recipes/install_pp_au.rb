@@ -18,6 +18,7 @@ node[:deploy].each do |application, deploy|
 
   sites = JSON.parse(file_content)
   sites['site'].each do |current|
+    only_if { ::File.exists?("#{deploy[:deploy_to]}/current/" + current[1]['app_folder'] + "/config/parameters_pp.dist.yml") }
 
     #Get vhost and write to file
     tmp_vhost_bucket = vhost_bucket + current[1]['vhost']
@@ -47,7 +48,5 @@ node[:deploy].each do |application, deploy|
 
     # To write changes to the file, use:
     File.open("#{deploy[:deploy_to]}/current/" + current[1]['app_folder'] + "/config/parameters_pp.yml", "w") {|file| file.puts new_contents }
-
-    only_if { ::File.exists?("#{deploy[:deploy_to]}/current/" + current[1]['app_folder'] + "/config/parameters_pp.dist.yml") }
   end
 end
