@@ -9,6 +9,7 @@ node[:deploy].each do |application, deploy|
     cwd "#{deploy[:deploy_to]}/current"
     code <<-EOH
 
+    php composer.phar self-update
     php composer.phar install --prefer-dist --no-scripts --optimize-autoloader --no-scripts
     EOH
     only_if { ::File.exists?("#{deploy[:deploy_to]}/current/composer.json") }
