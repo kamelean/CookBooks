@@ -1,20 +1,20 @@
 require 'aws-sdk'
-
-s3 = AWS::S3.new
-
-#Globals
-vhost_bucket = "vhosts/"
-vhost_path = "/etc/apache2/sites-enabled/"
-
 node[:deploy].each do |application, deploy|
+
+  s3 = AWS::S3.new
+
+  #Globals
+  vhost_bucket = "vhosts/"
+  vhost_path = "/etc/apache2/sites-enabled/"
+
   # Set bucket and object name
   obj = s3.buckets['ops-works-config'].objects['au-pp.json']
 
-# Read content to variable
+  # Read content to variable
   file_content = obj.read
 
-# Log output (optional)
-# Chef::Log.info(file_content)
+  # Log output (optional)
+  # Chef::Log.info(file_content)
 
   sites = JSON.parse(file_content)
   sites['site'].each do |current|
@@ -38,7 +38,7 @@ node[:deploy].each do |application, deploy|
     end
 
     #Copy and update parameter file
-    text = File.read("#{deploy[:deploy_to]}/current/" + current[1]['app_folder'] + '/config/parameters_pp.dist.yml')
+    text = File.read("#{deploy[:deploy_to]}/current/" + current[1]['app_folder'] + "/config/parameters_pp.dist.yml")
     new_contents = text.gsub("YOUR_USER", current[1]['user'])
     new_contents = new_contents.gsub("YOUR_PASSWORD", current[1]['pass'])
 
@@ -46,7 +46,8 @@ node[:deploy].each do |application, deploy|
     #puts new_contents
 
     # To write changes to the file, use:
-    File.open("#{deploy[:deploy_to]}/current/" + current[1]['app_folder'] + '/config/parameters_pp.yml', "w") {|file| file.puts new_contents }
+    File.open("#{deploy[:deploy_to]}/current/" + current[1]['app_folder'] + "/config/parameters_pp.yml", "w") {|file| file.puts new_contents }
 
+    only_if { ::File.exists?("#{deploy[:deploy_to]}/current/" + current[1]['app_folder'] + "/config/parameters_pp.dist.yml") }
   end
 end
