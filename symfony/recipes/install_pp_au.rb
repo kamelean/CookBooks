@@ -30,7 +30,6 @@ node[:deploy].each do |application, deploy|
       action :create
     end
 
-
     #Get web app file
     obj_app = s3.buckets['ops-works-config'].objects["pp_apps/" + current[1]['web_app']]
     file_content_app = obj_app.read
@@ -38,7 +37,6 @@ node[:deploy].each do |application, deploy|
       content file_content_app
       action :create
     end
-
 
     #Copy and update parameter file
     ruby_block 'testing' do
@@ -52,5 +50,20 @@ node[:deploy].each do |application, deploy|
       only_if { ::File.exists?("#{deploy[:deploy_to]}/current/" + current[1]['app_folder'] + "/config/parameters_pp.dist.yml") }
     end
 
+    script "install_remains" do
+      interpreter "bash"
+      user "root"
+      cwd "#{deploy[:deploy_to]}/current"
+      code <<-EOH
+
+        php #{current[1]['app_folder']}/console assetic:dump --env=#{current[1]['env']}
+        php #{current[1]['app_folder']}/console assets:install --env=#{current[1]['env']}
+        php #{current[1]['app_folder']}/console cache:clear --env=#{current[1]['env']} --no-debug --no-warmup
+        chmod -R 777 #{current[1]['app_folder']}/cache
+        chmod -R 777 #{current[1]['app_folder']}/logs
+
+      EOH
+      only_if { ::File.exists?("#{deploy[:deploy_to]}/current/composer.json") }
+    end
   end
 end
