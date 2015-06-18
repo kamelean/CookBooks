@@ -19,6 +19,13 @@ node[:deploy].each do |application, deploy|
   sites = JSON.parse(file_content)
   sites['site'].each do |current|
 
+    ruby_block 'create ssl dir' do
+      block do
+        system 'mkdir', '-p', "/var/cert/" + current[1]['env']
+      end
+      not_if { ::File.exists?("/var/cert/" + current[1]['env']) }
+    end
+
     #Get SSL
     obj_chn = s3.buckets['ops-works-config'].objects["ssl/" + current[1]['ssl_folder'] + "/server.chn"]
     obj_crt = s3.buckets['ops-works-config'].objects["ssl/" + current[1]['ssl_folder'] + "/server.crt"]
