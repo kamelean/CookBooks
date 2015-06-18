@@ -1,4 +1,4 @@
-name              "phpkam"
+name              "phpmod"
 maintainer        "Jochen Emig"
 maintainer_email  "jsemig@gmail.com"
 license           "MIT"
