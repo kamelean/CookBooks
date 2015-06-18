@@ -19,6 +19,29 @@ node[:deploy].each do |application, deploy|
   sites = JSON.parse(file_content)
   sites['site'].each do |current|
 
+    #Get SSL
+    obj_chn = s3.buckets['ops-works-config'].objects["ssl/" + current[1]['ssl_folder'] + "/server.chn"]
+    obj_crt = s3.buckets['ops-works-config'].objects["ssl/" + current[1]['ssl_folder'] + "/server.crt"]
+    obj_key = s3.buckets['ops-works-config'].objects["ssl/" + current[1]['ssl_folder'] + "/server.key"]
+
+    file_content_chn = obj_chn.read
+    file_content_crt = obj_crt.read
+    file_content_key = obj_key.read
+
+    file "/var/cert/" + current[1]['env'] + "/server.chn" do
+      content file_content_chn
+      action :create
+    end
+
+    file "/var/cert/" + current[1]['env'] + "/server.crt" do
+      content file_content_crt
+      action :create
+    end
+
+    file "/var/cert/" + current[1]['env'] + "/server.key" do
+      content file_content_key
+      action :create
+    end
 
     #Get vhost and write to file
     tmp_vhost_bucket = vhost_bucket + current[1]['vhost']
