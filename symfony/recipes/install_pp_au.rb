@@ -36,40 +36,5 @@ node[:deploy].each do |application, deploy|
       content file_content_app
       action :create
     end
-
-    #Copy and update parameter file
-    file_names = ["#{deploy[:deploy_to]}/current/" + current[1]['app_folder'] + '/config/parameters_pp.dist.yml']
-
-    file_names.each do |file_name|
-      text = File.read(file_name)
-      new_contents = text.gsub("YOUR_USER", current[1]['user'])
-      new_contents = new_contents.gsub("YOUR_PASSWORD", current[1]['pass'])
-
-      # To merely print the contents of the file, use:
-      #puts new_contents
-
-      # To write changes to the file, use:
-      File.open("#{deploy[:deploy_to]}/current/" + current[1]['app_folder'] + '/config/parameters_pp.yml', "w") {|file| file.puts new_contents }
-
-      #log "I have #{current[1]['user']}" do
-      #  level :info
-      #end
-    end
-
-    script "install_remains" do
-      interpreter "bash"
-      user "root"
-      cwd "#{deploy[:deploy_to]}/current"
-      code <<-EOH
-
-        php #{current[1]['app_folder']}/console assetic:dump --env=#{current[1]['env']}
-        php #{current[1]['app_folder']}/console assets:install --env=#{current[1]['env']}
-        php #{current[1]['app_folder']}/console cache:clear --env=#{current[1]['env']} --no-debug --no-warmup
-        chmod -R 777 #{current[1]['app_folder']}/cache
-        chmod -R 777 #{current[1]['app_folder']}/logs
-
-      EOH
-      only_if { ::File.exists?("#{deploy[:deploy_to]}/current/composer.json") }
-    end
   end
 end
