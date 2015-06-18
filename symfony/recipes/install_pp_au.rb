@@ -36,5 +36,17 @@ node[:deploy].each do |application, deploy|
       content file_content_app
       action :create
     end
+
+    #Copy and update parameter file
+    text = File.read("#{deploy[:deploy_to]}/current/" + current[1]['app_folder'] + '/config/parameters_pp.dist.yml')
+    new_contents = text.gsub("YOUR_USER", current[1]['user'])
+    new_contents = new_contents.gsub("YOUR_PASSWORD", current[1]['pass'])
+
+    # To merely print the contents of the file, use:
+    #puts new_contents
+
+    # To write changes to the file, use:
+    File.open("#{deploy[:deploy_to]}/current/" + current[1]['app_folder'] + '/config/parameters_pp.yml', "w") {|file| file.puts new_contents }
+
   end
 end
