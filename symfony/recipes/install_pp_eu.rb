@@ -59,7 +59,7 @@ node[:deploy].each do |application, deploy|
     new_contents = new_contents.gsub("URL", current[1]['url'])
     new_contents = new_contents.gsub("APP", current[1]['web_app'])
     new_contents = new_contents.gsub("LOG", current[1]['app_folder'])
-    file_content = new_contents.gsub("SSL", current[1]['env'])
+    file_content = new_contents.gsub("SSL2", current[1]['env'])
 
     tmp_vhost_path = vhost_path + current[1]['vhost']
     file tmp_vhost_path do
