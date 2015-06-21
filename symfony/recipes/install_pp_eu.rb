@@ -8,7 +8,7 @@ node[:deploy].each do |application, deploy|
   vhost_path = "/etc/apache2/sites-enabled/"
 
   # Set bucket and object name
-  obj = s3.buckets['ops-works-config'].objects['au-pp.json']
+  obj = s3.buckets['ops-works-config'].objects['eu-pp.json']
 
   # Read content to variable
   file_content = obj.read
@@ -51,9 +51,16 @@ node[:deploy].each do |application, deploy|
     end
 
     #Get vhost and write to file
-    tmp_vhost_bucket = vhost_bucket + current[1]['vhost']
+    tmp_vhost_bucket = vhost_bucket + current[1]['vhost_template']
     obj_vhost = s3.buckets['ops-works-config'].objects[tmp_vhost_bucket]
     file_content = obj_vhost.read
+
+    new_contents = file_content.gsub("PATH", "#{deploy[:deploy_to]}")
+    new_contents = new_contents.gsub("URL", current[1]['url'])
+    new_contents = new_contents.gsub("APP", current[1]['web_app'])
+    new_contents = new_contents.gsub("LOG", current[1]['app_folder'])
+    file_content = new_contents.gsub("SSL", current[1]['env'])
+
     tmp_vhost_path = vhost_path + current[1]['vhost']
     file tmp_vhost_path do
       content file_content

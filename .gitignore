@@ -2,3 +2,4 @@
 symfony/recipes/parameters_pp.dist.yml
 symfony/recipes/parameters_pp.yml
 symfony/recipes/tmp.rb
+symfony/recipes/vhost-template.conf
