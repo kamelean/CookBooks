@@ -8,7 +8,7 @@ node[:deploy].each do |application, deploy|
   vhost_path = "/etc/apache2/sites-enabled/"
 
   # Set bucket and object name
-  obj = s3.buckets['ops-works-config'].objects['eu-pp.json']
+  obj = s3.buckets['ops-works-config'].objects['eu-prod.json']
 
   # Read content to variable
   file_content = obj.read
