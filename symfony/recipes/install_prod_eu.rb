@@ -18,6 +18,7 @@ node[:deploy].each do |application, deploy|
 
   sites = JSON.parse(file_content)
   sites['site'].each do |current|
+    Chef::Log.info 'NOW WORKING ON: ' + current[1]['env']
 
     ruby_block 'create ssl dir' do
       block do
