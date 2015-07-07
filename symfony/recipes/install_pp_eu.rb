@@ -85,6 +85,17 @@ node[:deploy].each do |application, deploy|
       only_if { ::File.exists?("/etc/hosts")}
     end
 
+    #Create health
+    ruby_block 'addHealthCheck' do
+      block do
+        text = File.read("#{deploy[:deploy_to]}/current/web/healthcheck.dist.php")
+        new_contents = text.gsub("SERVER_ADDRESS", current[1]['url'])
+        # To write changes to the file, use:
+        File.open("#{deploy[:deploy_to]}/current/web/" + current[1]['env'] + ".php", "w") {|file| file.puts new_contents }
+      end
+      only_if { ::File.exists?("#{deploy[:deploy_to]}/current/web/healthcheck.dist.php") }
+    end
+
     #Copy and update parameter file
     ruby_block 'testing' do
       block do
