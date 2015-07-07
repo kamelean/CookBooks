@@ -75,6 +75,16 @@ node[:deploy].each do |application, deploy|
       action :create
     end
 
+    #Update Host file
+    ruby_block 'addHostData' do
+      block do
+        File.open('/etc/hosts', 'a+') do |hosts|
+          hosts.puts("127.0.0.1 #{current[1]['url']}")
+        end
+      end
+      only_if { ::File.exists?("/etc/hosts")}
+    end
+
     #Copy and update parameter file
     ruby_block 'testing' do
       block do
