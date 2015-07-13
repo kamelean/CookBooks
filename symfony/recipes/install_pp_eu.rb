@@ -118,12 +118,22 @@ node[:deploy].each do |application, deploy|
         php #{current[1]['app_folder']}/console assetic:dump --env=#{current[1]['env']}
         php #{current[1]['app_folder']}/console assets:install --env=#{current[1]['env']}
         php #{current[1]['app_folder']}/console doctrine:migrations:migrate --no-interaction --env=#{current[1]['env']}
-        php #{current[1]['app_folder']}/console cache:clear --env=#{current[1]['env']} --no-debug
+        php #{current[1]['app_folder']}/console cache:clear --env=#{current[1]['env']} --no-debug --no-
         chmod -R 777 #{current[1]['app_folder']}/cache
         chmod -R 777 #{current[1]['app_folder']}/logs
 
       EOH
       only_if { ::File.exists?("#{deploy[:deploy_to]}/current/composer.json") }
     end
+  end
+
+  #PHP.ini
+  ruby_block 'addHostData' do
+    block do
+      File.open('/etc/php.ini', 'a+') do |hosts|
+        hosts.puts("date.timezone = UTC")
+      end
+    end
+    only_if { ::File.exists?("/etc/php.ini")}
   end
 end
