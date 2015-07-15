@@ -127,4 +127,13 @@ node[:deploy].each do |application, deploy|
       only_if { ::File.exists?("#{deploy[:deploy_to]}/current/composer.json") }
     end
   end
+  #PHP.ini
+  ruby_block 'addHostData' do
+    block do
+      File.open('/etc/php.ini', 'a+') do |hosts|
+        hosts.puts("date.timezone = UTC")
+      end
+    end
+    only_if { ::File.exists?("/etc/php.ini")}
+  end
 end
