@@ -136,4 +136,15 @@ node[:deploy].each do |application, deploy|
     end
     only_if { ::File.exists?("/etc/php.ini")}
   end
+
+  #Add a dummy vhost to handle the catchall instead of 48hpromo
+  obj_vhost = s3.buckets['ops-works-config'].objects["vhosts/00-default.conf"]
+
+  file_content_vhost = obj_vhost.read
+
+  file vhost_path + "/00-default.conf" do
+    content file_content_vhost
+    action :create
+  end
+
 end
