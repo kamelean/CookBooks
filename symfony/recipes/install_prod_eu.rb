@@ -127,11 +127,27 @@ node[:deploy].each do |application, deploy|
       only_if { ::File.exists?("#{deploy[:deploy_to]}/current/composer.json") }
     end
   end
+
+  #httpd.conf
+  ruby_block 'updateHTTPDConf' do
+    block do
+      File.open('/etc/httpd/conf/httpd.conf', 'a+') do |hosts|
+        hosts.puts("ServerSignature Off")
+        hosts.puts("ServerTokens Prod")
+      end
+    end
+    only_if { ::File.exists?("/etc/php.ini")}
+  end
+
   #PHP.ini
-  ruby_block 'addHostData' do
+  ruby_block 'updatePHPConf' do
     block do
       File.open('/etc/php.ini', 'a+') do |hosts|
         hosts.puts("date.timezone = UTC")
+        hosts.puts("expose_php = Off")
+        hosts.puts("session.cookie_httponly = 1")
+        hosts.puts("session.cookie_secure = 1")
+        hosts.puts("session.use_only_cookies = 1")
       end
     end
     only_if { ::File.exists?("/etc/php.ini")}
